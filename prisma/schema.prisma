@@ -10,11 +10,33 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
+
+model User {
+    id        String      @id @default(cuid())
+    emailAddress     String   @unique
+    name      String?
+    imageUrl String?
+    firstName String?
+    lastName String?
+
+    cradits   Int      @default(150)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    @@index([name])
+}
+
+
+model Project {
+    id        String      @id @default(cuid())
+
     name      String
+    githubUrl String
+    gihubKey  String?
+    deletedAt DateTime?
+    
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([name])
 }
