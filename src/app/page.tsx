@@ -1,4 +1,3 @@
-import { Globe } from "@/components/ui/globe";
 
 export default async function Home() {
 
