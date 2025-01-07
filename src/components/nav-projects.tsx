@@ -31,9 +31,9 @@ export function NavProjects({
       <SidebarGroupLabel>Your Projects</SidebarGroupLabel>
       <SidebarMenu>
         {projects &&
-          projects?.map((item) => (
+          projects?.map((item , index) => (
             <SidebarMenuItem
-              key={item.name}
+              key={index}
               onClick={() => {
                 setProjectId(item?.id);
               }}

@@ -8,8 +8,7 @@ import React, { useEffect } from "react";
 
 const DashboardPage = () => {
   const { user } = useUser();
-  const { selectedProject } = useProjects();
-
+  const { selectedProject, projectId } = useProjects();
 
   return (
     <div>

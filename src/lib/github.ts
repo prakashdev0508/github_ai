@@ -1,5 +1,7 @@
 import { db } from "@/server/db";
 import { Octokit } from "octokit";
+import { aisummeriseCommit } from "./gemini";
+import axios from "axios";
 
 export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -8,15 +10,14 @@ export const octokit = new Octokit({
 const githubUrl = " https://github.com/joschan21/pingpanda";
 
 type Response = {
-  commitHash: String;
-  commitMessage: String;
+  commitHash: string;
+  commitMessage: string;
   commitDate: Date;
-  commitAutherName: String;
-  commitAutherAvatar: String;
+  commitAutherName: string;
+  commitAutherAvatar: string;
 };
 
 export const getCommits = async (githubUrl: string) => {
-
   const [owner, repo] = githubUrl.split("/").slice(-2);
 
   if (!owner || !repo) {
@@ -49,7 +50,37 @@ export const getCommits = async (githubUrl: string) => {
 export const pollcommits = async (projectId: string) => {
   const { githubUrl, project } = await fetchProjectGithubUrl(projectId);
   const commits = await getCommits(githubUrl);
+  console.log("commits" , commits)
   const unprocessedCommits = await filterProcessedCommits(projectId, commits);
+
+  const summeriseResponse = await Promise.allSettled(
+    unprocessedCommits.map((commit) => {
+      return summerizeCommits(githubUrl, commit.commitHash);
+    }),
+  );
+
+  const summery = summeriseResponse.map((response) => {
+    if (response.status == "fulfilled") {
+      return response.value as string;
+    }
+    return "";
+  });
+
+  const commit = await db.commits.createMany({
+    data: summery.map((summery, index) => {
+      return {
+        projectId: projectId ?? "",
+        commitHash: unprocessedCommits[index]?.commitHash ?? "",
+        commitAutherName: unprocessedCommits[index]?.commitAutherName ?? "",
+        commitAutherAvatar: unprocessedCommits[index]?.commitAutherAvatar ?? "",
+        commitDate: unprocessedCommits[index]?.commitDate ?? new Date(),
+        commitMessage: unprocessedCommits[index]?.commitMessage ?? "",
+        summary: summery,
+      };
+    }),
+  });
+
+  return commit;
 };
 
 export const fetchProjectGithubUrl = async (projectId: string) => {
@@ -69,10 +100,19 @@ export const fetchProjectGithubUrl = async (projectId: string) => {
   };
 };
 
-export const summerizeCommits = async (githubUrl: string, commitHash: string) => {
+export const summerizeCommits = async (
+  githubUrl: string,
+  commitHash: string,
+) => {
+  const { data } = await axios.get(`${githubUrl}/commit/${commitHash}.diff`, {
+    headers: {
+      Accept: "application/vnd.github.v3.diff",
+    },
+  });
 
-
-}
+  const summerisecommitData = (await aisummeriseCommit(data)) || "";
+  return summerisecommitData;
+};
 
 export const filterProcessedCommits = async (
   projectId: string,
@@ -87,6 +127,8 @@ export const filterProcessedCommits = async (
   const unprocessedCommits = commits.filter((commit) => {
     return !processedCommits.some((c) => c.commitHash === commit.commitHash);
   });
+
+  console.log(unprocessedCommits)
 
   return unprocessedCommits;
 };

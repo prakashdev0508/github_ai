@@ -9,7 +9,7 @@ const modal = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
-export const summeriseCommit = async (diff: string) => {
+export const aisummeriseCommit = async (diff: string) => {
   const response = await modal.generateContent([
     `
                 You are an expert programmer , and you are trying to summerize a git diff.
