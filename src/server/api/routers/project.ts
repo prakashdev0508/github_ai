@@ -24,7 +24,6 @@ export const projectRouter = createTRPCRouter({
           },
         },
       });
-      console.log( "ppr" , project)
       await pollcommits(project?.id);
       return true;
     }),
@@ -43,4 +42,19 @@ export const projectRouter = createTRPCRouter({
 
     return projects;
   }),
+  getCommitsLogs: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      pollcommits(input.projectId).then().catch(console.error);
+      const commitsLogs = await ctx.db.commits.findMany({
+        where: {
+          projectId: input.projectId,
+        },
+      });
+      return commitsLogs;
+    }),
 });

@@ -92,7 +92,7 @@ const CreateProject = () => {
           <div>
             <Input
               type="text"
-              placeholder="GitHub Token (optional)"
+              placeholder="GitHub Token (for private repo)"
               className="mb-2"
               value={githubToken}
               onChange={(e) => setGithubToken(e.target.value)}

@@ -7,8 +7,6 @@ export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const githubUrl = " https://github.com/joschan21/pingpanda";
-
 type Response = {
   commitHash: string;
   commitMessage: string;
@@ -16,6 +14,7 @@ type Response = {
   commitAutherName: string;
   commitAutherAvatar: string;
 };
+
 
 export const getCommits = async (githubUrl: string) => {
   const [owner, repo] = githubUrl.split("/").slice(-2);
@@ -36,7 +35,7 @@ export const getCommits = async (githubUrl: string) => {
     );
   });
 
-  return sortedData.slice(0, 5).map((commit: any) => {
+  return sortedData.map((commit: any) => {
     return {
       commitHash: commit.sha as string,
       commitMessage: commit.commit.message ?? "",
@@ -50,7 +49,6 @@ export const getCommits = async (githubUrl: string) => {
 export const pollcommits = async (projectId: string) => {
   const { githubUrl, project } = await fetchProjectGithubUrl(projectId);
   const commits = await getCommits(githubUrl);
-  console.log("commits" , commits)
   const unprocessedCommits = await filterProcessedCommits(projectId, commits);
 
   const summeriseResponse = await Promise.allSettled(
@@ -124,11 +122,11 @@ export const filterProcessedCommits = async (
     },
   });
 
-  const unprocessedCommits = commits.filter((commit) => {
-    return !processedCommits.some((c) => c.commitHash === commit.commitHash);
-  });
-
-  console.log(unprocessedCommits)
+  const unprocessedCommits = commits
+    .filter((commit) => {
+      return !processedCommits.some((c) => c.commitHash === commit.commitHash);
+    })
+    .slice(0, 5);
 
   return unprocessedCommits;
 };
