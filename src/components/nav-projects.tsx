@@ -30,8 +30,7 @@ export function NavProjects({
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Your Projects</SidebarGroupLabel>
       <SidebarMenu>
-        {projects &&
-          projects?.map((item , index) => (
+        {projects?.map((item , index) => (
             <SidebarMenuItem
               key={index}
               onClick={() => {

@@ -30,10 +30,10 @@ const CreateProject = () => {
       {
         name,
         githubUrl,
-        githubToken,
+        githubToken : githubToken.length > 0 ? githubToken : undefined
       },
       {
-        onSuccess: () => {
+        onSuccess: async() => {
           toast.success("Project created successfully");
           refetch();
           clearForm();

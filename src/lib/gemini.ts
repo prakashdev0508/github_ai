@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Document } from "@langchain/core/documents";
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
   throw new Error("GEMINI_API_KEY is not defined");
@@ -52,6 +53,41 @@ Please summarise the following diff file: \n\n${diff}
     `,
   ]);
 
-  return response.response.text()
-
+  return response.response.text();
 };
+
+export const summeriseCode = async (doc: Document) => {
+  try {
+    const code = doc.pageContent.slice(0, 10000);
+
+    const response = await modal.generateContent([
+      `“You are an intelligent senior software engineer who specialises in onboarding junior software engineers onto projects.
+  “You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file. Here is the code 
+  ---
+      ${code}
+  
+  ---
+  Give a summary no more than 100 words of the code above.
+  `,
+    ]);
+    return response.response.text();
+    
+  } catch (error) {
+    return ""
+  }
+};
+
+export async function generateEmbedding(summery: string) {
+
+  const modal =  genAI.getGenerativeModel({
+    model: "text-embedding-004",
+  });
+
+  const response = await modal.embedContent(summery);
+  const embeddings = response.embedding;
+
+  return embeddings.values;
+}
+
+
+

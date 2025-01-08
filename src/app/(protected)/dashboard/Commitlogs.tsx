@@ -16,8 +16,7 @@ const Commitlogs = () => {
   return (
     <div>
       <ul className="space-y-6">
-        {commitDataLogs &&
-          commitDataLogs.map((commit, commitIndex) => (
+        {commitDataLogs?.map((commit, commitIndex) => (
             <li key={commit.id} className="relative flex gap-x-4">
               <div
                 className={cn(
