@@ -108,7 +108,8 @@ export const summerizeCommits = async (
     },
   });
 
-  const summerisecommitData = (await aisummeriseCommit(data)) || "";
+  const summerisecommitData = ( aisummeriseCommit(data)) || "";
+  console.log( "summary" , summerisecommitData);
   return summerisecommitData;
 };
 
