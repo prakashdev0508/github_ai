@@ -58,7 +58,7 @@ ${question}
 END OF QUESTION
 `,
     });
-
+ 
     for await (const dalta of textStream) {
       stream.update(dalta);
     }
