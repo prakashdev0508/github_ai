@@ -41,6 +41,7 @@ const QuestionCard = () => {
     setLoading(true);
 
     const { output, fileName } = await askQuestion(question, projectId);
+    console.log( "outi ",  output);
     setOpen(true);
     setFileReference(fileName);
     for await (const delta of readStreamableValue(output)) {
@@ -78,7 +79,7 @@ const QuestionCard = () => {
             />
             </div>
           <div className="h-4 ">
-            <CodeRefercnce fileReference={fileReference} />
+            
           </div>
           <Button
             onClick={() => {
