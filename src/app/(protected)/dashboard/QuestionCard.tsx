@@ -79,7 +79,7 @@ const QuestionCard = () => {
             />
             </div>
           <div className="h-4 ">
-            <CodeRefercnce fileReference={fileReference} />
+            
           </div>
           <Button
             onClick={() => {
