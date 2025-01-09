@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "postinstall": "prisma generate",
+    "postinstall": "prisma migrate && prisma db push",
+    "migrate": "prisma migrate && prisma db push",
     "build": "next build",
     "check": "next lint && tsc --noEmit",
     "db:generate": "prisma migrate dev",
