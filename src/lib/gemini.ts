@@ -12,8 +12,7 @@ const modal = genAI.getGenerativeModel({
 
 export const aisummeriseCommit = async (diff: string) => {
   const response = await modal.generateContent([
-    `
-                You are an expert programmer , and you are trying to summerize a git diff.
+    `You are an expert programmer , and you are trying to summerize a git diff.
 Remainder about the git diff format.
 For every file, there are a few metadata lines, like (for example):
 \'\'\
@@ -48,9 +47,7 @@ Most commits will have fewer comments than this example list.
 The last comment does not include the file names, because there were more than two relevant files in the hypothetical commit.
 Do not include parts of the example in your summary. It is given only as an example of appropriate comments.
 
-Please summarise the following diff file: \n\n${diff}
-
-    `,
+Please summarise the following diff file: \n\n${diff}`,
   ]);
 
   return response.response.text();

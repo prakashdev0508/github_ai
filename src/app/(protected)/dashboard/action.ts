@@ -37,8 +37,8 @@ export async function askQuestion(question: string, projectId: string) {
   }
 
   (async () => {
-    const { textStream } =  streamText({
-      model: google("gemini-1.5-flash"),
+    const { textStream } = await  streamText({
+      model: google("gemini-1.5-pro"),
       prompt: `You are a code assistant who answers questions about the codebase. Your target audience is a technical intern who is looking to understand the codebase.
 
 AI assistant is a brand new, powerful, human-like artificial intelligence. The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
@@ -62,7 +62,11 @@ END OF QUESTION
     for await (const dalta of textStream) {
       stream.update(dalta);
     }
+    stream.done()
+
   })();
+
+
 
   return { output: stream.value, fileName: result };
 }
